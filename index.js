@@ -10,7 +10,6 @@ const {
   proto,
   getContentType,
   Browsers, 
-  downloadMediaMessage,
   fetchLatestWaWebVersion
 } = require("@adiwajshing/baileys");
 const pino = require("pino");
@@ -22,7 +21,7 @@ const figlet = require("figlet");
 const _ = require("lodash");
 const PhoneNumber = require("awesome-phonenumber");
 
-let count = 0;
+let count = 1;
 const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream: "store" }) });
 
 const color = (text, color) => {
@@ -159,38 +158,6 @@ async function startHisoka() {
       if (mek.key && mek.key.remoteJid === "status@broadcast") return;
       if (!client.public && !mek.key.fromMe && chatUpdate.type === "notify") return;
       if (mek.key.id.startsWith("BAE5") && mek.key.id.length === 16) return;
-      let mtp = Object.keys(mek.message)[0];
-      // if(mtp === 'extendedTextMessage' && mek.message.extendedTextMessage.text== '/stiker'){
-      //   console.log("masukkan gambar")
-      //   // client.sendMessage()
-        
-      //   return;
-      // }
-      // console.log(mtp)
-      // console.log(mek.message.extendedTextMessage.text)
-      // console.log(mek.message.imageMessage.caption)
-      
-  //     if (mtp === 'imageMessage') {
-		// 		// download the message
-		// 		let buffer = await downloadMediaMessage(
-		// 			mek,
-		// 			'buffer',
-		// 			{ },
-		// 			{ 
-						
-		// 				// pass this so that baileys can request a reupload of media
-		// 				// that has been deleted
-		// 				reuploadRequest: client.updateMediaMessage
-		// 			}
-		// 		)
-
-		// 		buffer = await writeExifImg(buffer ,{packname: "amway", author: "amway"} )
-		// 		// console.log(buffer)
-
-		// 		await client.sendMessage(mek.key.remoteJid, {sticker: {url :buffer}} );
-
-
-		// 	}
       m = smsg(client, mek, store);
       // console.log(m)
       require("./sansekai")(client, m, chatUpdate, store);
@@ -294,7 +261,7 @@ async function startHisoka() {
       client.sendMessage(Nomorgrup, { text: `Bot started! \n\nketik /menu untuk melihat fitur bot`});
       }
       count++;
-    //   client.sendMessage(botNumber, { text: `Bot started! ` });
+      client.sendMessage(botNumber, { text: `Bot started! ` });
     }
     // console.log('Connected...', update)
   });
