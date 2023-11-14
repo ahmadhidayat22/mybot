@@ -1,7 +1,6 @@
 # Wa-OpenAI
 
-***WhatsApp OpenAI ChatGPT Create with NodeJS Using Library [Baileys](https://github.com/adiwajshing/Baileys)  
-clone from https://github.com/Sansekai/Wa-OpenAI ***
+***WhatsApp OpenAI ChatGPT Create with NodeJS Using Library [Baileys](https://github.com/adiwajshing/Baileys) clone from https://github.com/Sansekai/Wa-OpenAI ***
 
 
 ## Get & Change OpenAI ApiKey
