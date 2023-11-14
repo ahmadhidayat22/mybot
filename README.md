@@ -1,9 +1,8 @@
 # Wa-OpenAI
 
-***WhatsApp OpenAI ChatGPT Create with NodeJS Using Library [Baileys](https://github.com/adiwajshing/Baileys)***
+***WhatsApp OpenAI ChatGPT Create with NodeJS Using Library [Baileys](https://github.com/adiwajshing/Baileys)  
+clone from https://github.com/Sansekai/Wa-OpenAI ***
 
-## BACA DULU
-Terdapat 2 fitur yaitu ```ChatGPT(text)``` dan ```DALL-E(Text To Image).```<br>Untuk commandnya menggunakan ```/ai``` dan ```/img```
 
 ## Get & Change OpenAI ApiKey
 - Silakan buat apikeynya terlebih dahulu [Disini](https://beta.openai.com/account/api-keys)
@@ -35,9 +34,6 @@ Sesudah menginstall file node_modules, silahkan extract file ```node_modules.zip
 ```bash
 $ node index.js
 ```
-
-## Donate
-<a href="https://saweria.co/Sansekai" target="_blank"><img src="https://user-images.githubusercontent.com/26188697/180601310-e82c63e4-412b-4c36-b7b5-7ba713c80380.png" alt="Donate For Yusril" height="41" width="174"></a>
 
 ## License
 [MIT License](https://github.com/Sansekai/Wa-OpenAI/blob/main/LICENSE)
