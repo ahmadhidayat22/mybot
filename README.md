@@ -25,7 +25,7 @@ Silakan install manual ```node_modules``` terlebih dahulu, karena di termux saat
 <br>Link ```node_modules```: [Klik Disini](https://drive.google.com/file/d/1rnoVkJin3J_zDkzxBDnzBBI1-OuKk10_/view?usp=drivesdk)
 ```bash
 $ pkg install git nodejs -y
-$ git clone https://github.com/Sansekai/Wa-OpenAI
+$ git clone https://github.com/ahmadhidayat22/mybot.git
 $ cd Wa-OpenAI
 ```
 Sesudah menginstall file node_modules, silahkan extract file ```node_modules.zip``` dan taruh di folder Wa-OpenAI.
