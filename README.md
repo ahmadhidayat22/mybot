@@ -26,7 +26,7 @@ Silakan install manual ```node_modules``` terlebih dahulu, karena di termux saat
 ```bash
 $ pkg install git nodejs -y
 $ git clone https://github.com/ahmadhidayat22/mybot.git
-$ cd Wa-OpenAI
+$ cd mybot
 ```
 Sesudah menginstall file node_modules, silahkan extract file ```node_modules.zip``` dan taruh di folder Wa-OpenAI.
 
