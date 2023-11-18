@@ -151,11 +151,12 @@ lihat jadwal matkul 2023
 See free upcoming epic games
 
 
+
+
+`);
 // *(stop)*
 // Cmd: ${prefix}stop
 // Menghentikan bot
-
-`);
 					break;
 				case "ai":
 				case "openai":
