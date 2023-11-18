@@ -21,6 +21,24 @@ const ff = require("fluent-ffmpeg");
 const webp = require("node-webpmux");
 const path = require("path");
 const { TiktokDL } = require("@tobyg74/tiktok-api-dl");
+const axios = require("axios");
+
+const current = {
+	method: "GET",
+	url: "https://epic-free-games.p.rapidapi.com/epic-free-games",
+	headers: {
+		"X-RapidAPI-Key": "766d24ccc8msh20c3ff3132d20fep1e10fajsnc931cbce4d46",
+		"X-RapidAPI-Host": "epic-free-games.p.rapidapi.com",
+	},
+};
+const upcoming = {
+	method: "GET",
+	url: "https://epic-free-games.p.rapidapi.com/epic-free-games-coming-soon",
+	headers: {
+		"X-RapidAPI-Key": "766d24ccc8msh20c3ff3132d20fep1e10fajsnc931cbce4d46",
+		"X-RapidAPI-Host": "epic-free-games.p.rapidapi.com",
+	},
+};
 
 module.exports = sansekai = async (client, m, chatUpdate, store) => {
 	try {
@@ -126,9 +144,18 @@ Cmd: ${prefix}jadwal or ${prefix}matkul
 lihat jadwal matkul 2023
 
 
-*(stop)*
-Cmd: ${prefix}stop
-Menghentikan bot`);
+*(Games)*
+-Cmd: ${prefix}free
+ See free current epic games
+-Cmd: ${prefix}up
+See free upcoming epic games
+
+
+// *(stop)*
+// Cmd: ${prefix}stop
+// Menghentikan bot
+
+`);
 					break;
 				case "ai":
 				case "openai":
@@ -207,7 +234,6 @@ Menghentikan bot`);
 
 				case "stiker":
 					try {
-						
 						let buffer = await downloadMediaMessage(
 							mek,
 							"buffer",
@@ -216,16 +242,14 @@ Menghentikan bot`);
 								reuploadRequest: client.updateMediaMessage,
 							}
 						);
-            if(buffer !='' ){
-              m.reply("processing your image \nplease wait... ");
-              
-            }
-            
+						if (buffer != "") {
+							m.reply("processing your image \nplease wait... ");
+						}
+
 						buffer = await writeExifImg(buffer, {
-              packname: "amway",
+							packname: "amway",
 							author: "amway",
 						});
-				
 
 						await client.sendMessage(mek.key.remoteJid, {
 							sticker: { url: buffer },
@@ -233,7 +257,7 @@ Menghentikan bot`);
 
 						await fs.unlinkSync(buffer);
 					} catch (err) {
-						console.log("eror",err);
+						console.log("eror", err);
 						m.reply(
 							`Convert gambar ke stiker.\n\nContoh:\n${prefix}${command} lalu sertakan foto`
 						);
@@ -254,13 +278,12 @@ Menghentikan bot`);
 						TiktokDL(tiktok_url, {
 							version: "v1",
 						}).then(async (result) => {
-							
 							if (
 								result.status == "success" &&
 								result.result.video != undefined
 							) {
 								m.reply(`downloading..`);
-                
+
 								await client.sendMessage(mek.key.remoteJid, {
 									video: { url: result.result.video },
 								});
@@ -273,31 +296,105 @@ Menghentikan bot`);
 						m.reply(`Hanya vidio tiktok yang bisa di download..`);
 					}
 					break;
-				
+
 				case "jadwal":
 				case "matkul":
-				m.reply(`
-JADWAL MATKUL 2023 B22
-SENIN
-• 07:30 - 09:00 | C306 | Struktur data 
-• 14:40 - 16:10 | C307 | Organisasi dan arsitektur komputer
+					const date = new Date();
+					const day = date.getDay();
+					let teks;
+					let up;
+					switch (day) {
+						case 0:
+							teks = "Tidak ada jadwal sekarang";
+							up = "SENIN\n• 07:30 - 09:00 | C306 | Struktur data\n• 14:40 - 16:10 | C307 | Organisasi dan arsitektur komputer";
+							break;
+						case 1:
+							teks = "SENIN\n• 07:30 - 09:00 | C306 | Struktur data\n• 14:40 - 16:10 | C307 | Organisasi dan arsitektur komputer";
+							up ="SELASA\n• 09:10 - 10:40 | C304 | Managemen proyek IT\n• 14:40 - 16:10 | C306 | Alajabar linear";
+							break;
+						case 2: 
+							teks = "SELASA\n• 09:10 - 10:40 | C304 | Managemen proyek IT\n• 14:40 - 16:10 | C306 | Alajabar linear";
+							up = "RABU\n• 09:10 - 10:40 | C306 | Keamanan komputer\n• 13:00 - 14:30 | C306 | Pemrograman web";
+							break;
+						case 3:
+							teks = "RABU\n• 09:10 - 10:40 | C306 | Keamanan komputer\n• 13:00 - 14:30 | C306 | Pemrograman web";
+							up = "KAMIS\n• 10:50 - 12:20 | C306 | Basis data";
+							break;
+						case 4:
+							teks = "KAMIS\n• 10:50 - 12:20 | C306 | Basis data";
+							up =  "JUMAT\n• 13:30 - 15:00 | D408 & D409 | Probabiltas dan statistika";
+							break;
+						case 5:
+							teks = "JUMAT\n• 13:30 - 15:00 | D408 & D409 | Probabiltas dan statistika";
+							up = "Tidak ada jadwal ";
+							break;
+						case 6:
+							teks = "Tidak ada jadwal sekarang";
+							up = "Tidak ada jadwal ";
+							break;
 
-SELASA
-• 09:10 - 10:40 | C304 | Managemen proyek IT
-• 14:40 - 16:10 | C306 | Alajabar linear
+					}
+					m.reply(`
+*JADWAL HARI INI*
+${teks}
 
-RABU
-• 09:10 - 10:40 | C306 | Keamanan komputer
-• 13:00 - 14:30 | C306 | Pemrograman web
+*JADWAL BESOK*
+${up}
+`);
+					break;
 
-KAMIS
-• 10:50 - 12:20 | C306 | Basis data
+				case "free":
+					try {
+						const response = await axios.request(current);
+						if (response.status != 200) {
+							console.log(
+								"eror code : ",
+								response.status,
+								" ",
+								response.statusText
+							);
+						}
+						let nama = response.data[0].name;
+						let image = response.data[0].offerImageTall;
+						let url = response.data[0].appUrl;
+						let description = response.data[0].description;
+						let publisher = response.data[0].publisher;
+						let ket = `*${nama}*\n\nOpen In : ${url}\n\n*Price : free*\n\nDescription : ${description}\n\nPublisher : ${publisher}`;
 
-JUMAT
-• 07:30 - 09:00 | D408 & D409 | perb. Kalkulus
-• 13:30 - 15:00 | D408 & D409 | Probabiltas dan statistika
-				`);
-				break;
+	
+
+						client.sendImage(from, image, ket, mek);
+					} catch (error) {
+						console.error(error);
+					}
+					break;
+
+				case "up":
+					try {
+						const response = await axios.request(upcoming);
+						if (response.status != 200) {
+							console.log(
+								"eror code : ",
+								response.status,
+								" ",
+								response.statusText
+							);
+						}
+						for (let i = 0; i < response.data.length; i++) {
+							let nama = response.data[i].name;
+							let image = response.data[i].offerImageTall;
+							let url = response.data[i].appUrl;
+							let description = response.data[i].description;
+							let publisher = response.data[i].publisher;
+							let ket = `*${nama}*\n\nOpen In : ${url}\n\nDescription : ${description}\n\n Publisher : ${publisher}`;
+
+							client.sendImage(from, image, ket, mek);
+						}
+					} catch (error) {
+						console.error(error);
+					}
+					break;
+
 				default: {
 					if (isCmd2 && budy.toLowerCase() != undefined) {
 						if (m.chat.endsWith("broadcast")) return;
