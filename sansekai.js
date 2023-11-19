@@ -110,16 +110,16 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 
 		if (isCmd2) {
 			switch (command) {
-				// case "info":
-				// 	const waktu = new Date();
-				// 	const year = waktu.getFullYear();
-				// 	const month = waktu.getMonth();
-				// 	const days = waktu.getDate();
-				// 	const hours = waktu.getHours();
-				// 	const minutes = waktu.getMinutes();
-				// 	const seconds = waktu.getSecond();
+				case "info":
+					const waktu = new Date();
+					const year = waktu.getFullYear();
+					const month = waktu.getMonth();
+					const days = waktu.getDate();
+					const hours = waktu.getHours();
+					const minutes = waktu.getMinutes();
+					const seconds = waktu.getSecond();
 
-				// 	console.log(year,month,days," ",hours,minutes,seconds);
+					console.log(year,month,days," ",hours,minutes,seconds);
 
 				// 	break;
 				case "help":
@@ -259,9 +259,44 @@ m.reply(`*▁ ▂ ▄ ▅ ▆ ▇ █ Whatsapp Bot █ ▇ ▆ ▅ ▄ ▂ ▁*
 						m.reply(`Hanya vidio tiktok yang bisa di download..`);
 					}
 					break;
-
+				
+				case "btn":
+					const sections = [
+						{
+						title: "Section 1",
+						rows: [
+							{title: "Option 1", rowId: "option1"},
+							{title: "Option 2", rowId: "option2", description: "This is a description"}
+						]
+						},
+					   {
+						title: "Section 2",
+						rows: [
+							{title: "Option 3", rowId: "option3"},
+							{title: "Option 4", rowId: "option4", description: "This is a description V2"}
+						]
+						},
+					]
+					
+					const listMessage = {
+					  text: "This is a list",
+					  footer: "nice footer, link: https://google.com",
+					  title: "Amazing boldfaced list title",
+					  buttonText: "Required, text on the button to view the list",
+					  sections
+					}
+					
+					await client.sendMessage(mek.key.remoteJid, listMessage)
+					// await client.sendMessage(mek.key.remoteJid, buttonMessage)
+					break;
 				case "tkmp3":
 				case "tiktok-song":
+					await client.sendMessage(
+						mek.key.remoteJid, 
+						{audio: { url: "audio.mp3"}, mimetype: 'audio'} ,
+						{url : "audio.mp3"}
+						
+					);
 					if (!text)
 						return reply(
 							`Download lagu from tiktok .\n\nContoh:\n${prefix}tkmp3 (link tiktok) atau\n${prefix}tiktok-song (link tiktok)`
@@ -284,7 +319,8 @@ m.reply(`*▁ ▂ ▄ ▅ ▆ ▇ █ Whatsapp Bot █ ▇ ▆ ▅ ▄ ▂ ▁*
 									{url : result.result.music}
 									
 								);
-								// console.log(result.result.music);
+								
+								console.log(result.result.music);
 
 							} else {
 								m.reply(`gagal mendownload\ncoba lagi nanti atau ganti link`);
