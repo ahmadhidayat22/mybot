@@ -271,17 +271,20 @@ m.reply(`*▁ ▂ ▄ ▅ ▆ ▇ █ Whatsapp Bot █ ▇ ▆ ▅ ▄ ▂ ▁*
 						TiktokDL(tiktok_url, {
 							version: "v3",
 						}).then(async (result) => {
-							console.log(result);
+							// console.log(result);
 							if (
 								result.status == "success" &&
 								result.result.music != undefined
 							) {
 								m.reply(`downloading..`);
 
-								await client.sendMessage(mek.key.remoteJid, {
-									audio: { url: result.result.music },
-								});
-								console.log(result.result.music);
+								await client.sendMessage(
+									mek.key.remoteJid, 
+									{audio: { url: result.result.music }, mimetype:'audio/mp4'} ,
+									{url : result.result.music}
+									
+								);
+								// console.log(result.result.music);
 
 							} else {
 								m.reply(`gagal mendownload\ncoba lagi nanti atau ganti link`);
