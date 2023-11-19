@@ -1,5 +1,4 @@
 const sessionName = "yusril";
-const donet = "https://saweria.co/sansekai";
 const {
   default: sansekaiConnect,
   useMultiFileAuthState,
@@ -130,13 +129,13 @@ async function startHisoka() {
   console.log(`using WA v${version.join(".")}, isLatest: ${isLatest}`);
   console.log(
     color(
-      figlet.textSync("Wa-OpenAI", {
+      figlet.textSync("Wa-Bot", {
         font: "Standard",
         horizontalLayout: "default",
         vertivalLayout: "default",
         whitespaceBreak: false,
       }),
-      "green"
+      "yellow"
     )
   );
 
@@ -255,13 +254,13 @@ async function startHisoka() {
       const Nomorgrup ='120363198688029405@g.us'
       
       console.log(color("Bot success conneted to server", "green"));
-      console.log(color("Donate for creator https://saweria.co/sansekai", "yellow"));
+      // console.log(color("Donate for creator https://saweria.co/amway", "yellow"));
       console.log(color("Type /menu to see menu"));
       if(count == 0){
       client.sendMessage(Nomorgrup, { text: `Bot started! \n\nketik /menu untuk melihat fitur bot`});
       }
       count++;
-      client.sendMessage(botNumber, { text: `Bot started! ` });
+      client.sendMessage(botNumber, { text: `Bot started!` });
     }
     // console.log('Connected...', update)
   });
