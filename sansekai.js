@@ -1,13 +1,4 @@
 const {
-	BufferJSON,
-	WA_DEFAULT_EPHEMERAL,
-	generateWAMessageFromContent,
-	proto,
-	generateWAMessageContent,
-	generateWAMessage,
-	prepareWAMessageMedia,
-	areJidsSameUser,
-	getContentType,
 	downloadMediaMessage,
 } = require("@adiwajshing/baileys");
 const fs = require("fs");
@@ -39,7 +30,6 @@ const upcoming = {
 		"X-RapidAPI-Host": "epic-free-games.p.rapidapi.com",
 	},
 };
-
 module.exports = sansekai = async (client, m, chatUpdate, store) => {
 	try {
 		var body =
@@ -120,40 +110,48 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 
 		if (isCmd2) {
 			switch (command) {
+				// case "info":
+				// 	const waktu = new Date();
+				// 	const year = waktu.getFullYear();
+				// 	const month = waktu.getMonth();
+				// 	const days = waktu.getDate();
+				// 	const hours = waktu.getHours();
+				// 	const minutes = waktu.getMinutes();
+				// 	const seconds = waktu.getSecond();
+
+				// 	console.log(year,month,days," ",hours,minutes,seconds);
+
+				// 	break;
 				case "help":
 				case "menu":
 				case "start":
-				case "info":
-					m.reply(`*Whatsapp Bot OpenAI*
+				
+m.reply(`*▁ ▂ ▄ ▅ ▆ ▇ █ Whatsapp Bot █ ▇ ▆ ▅ ▄ ▂ ▁*
             
-*(ChatGPT)*
-Cmd: ${prefix}ai 
-Tanyakan apa saja kepada AI. 
+*ミ★ ChatGPT ★彡*
+★ Cmd: ${prefix}ai 
+   Tanyakan apa saja kepada AI. 
 
-*(Stiker)*
-Cmd: ${prefix}stiker
-Membuat stiker dari gambar
+*ミ★ Stiker ★彡*
+★ Cmd: ${prefix}stiker
+   Membuat stiker dari gambar
 
-*(no-watermark tiktok)*
-Cmd: ${prefix}tk or ${prefix}tiktok
-Mendownload vidio dari tiktok
+*ミ★ tiktok download ★彡*
+★ Cmd: ${prefix}tkmp4 or ${prefix}tiktok-video
+   Mendownload vidio dari tiktok
 
+★ Cmd: ${prefix}tkmp3 or ${prefix}tiktok-song
+   Mendownload lagu dari tiktok
 
-*(Matkul)*
-Cmd: ${prefix}jadwal or ${prefix}matkul
-lihat jadwal matkul 2023
+*ミ★ Matkul ★彡*
+★ Cmd: ${prefix}jadwal or ${prefix}matkul
+   lihat jadwal matkul hari ini
 
-
-*(Games)*
--Cmd: ${prefix}free
- See free current epic games
--Cmd: ${prefix}up
-See free upcoming epic games
-
-
-
-
-`);
+*ミ★ Games ★彡*
+★ Cmd: ${prefix}free
+   See free current epic games
+★ Cmd: ${prefix}up
+   See free upcoming epic games`);
 // *(stop)*
 // Cmd: ${prefix}stop
 // Menghentikan bot
@@ -163,16 +161,18 @@ See free upcoming epic games
 				case "chatgpt":
 				case "ask":
 					try {
-						m.reply(`processing your prompt \nPlease wait..`);
-						// tidak perlu diisi apikeynya disini, karena sudah diisi di file key.json
+						// m.reply(`processing your prompt \nPlease wait..`);
 						if (setting.keyopenai === "ISI_APIKEY_OPENAI_DISINI")
 							return reply(
 								"Apikey belum diisi\n\nSilahkan isi terlebih dahulu apikeynya di file key.json\n\nApikeynya bisa dibuat di website: https://beta.openai.com/account/api-keys"
 							);
-						if (!text)
+						if (!text){
 							return reply(
 								`Chat dengan AI.\n\nContoh:\n${prefix}${command} Apa itu resesi`
-							);
+						);}else{
+							reply(`processing your prompt \nPlease wait..`);
+						}
+								
 						const configuration = new Configuration({
 							apiKey: setting.keyopenai,
 						});
@@ -181,6 +181,8 @@ See free upcoming epic games
 							model: "gpt-3.5-turbo",
 							messages: [{ role: "user", content: text }],
 						});
+						if(response.status != 200) throw new Error;
+						// console.log(response);
 						m.reply(`${response.data.choices[0].message.content}`);
 					} catch (error) {
 						if (error.response) {
@@ -193,46 +195,6 @@ See free upcoming epic games
 						}
 					}
 					break;
-				case "img":
-				case "ai-img":
-				case "image":
-				case "images":
-				case "dall-e":
-				case "dalle":
-					try {
-						// tidak perlu diisi apikeynya disini, karena sudah diisi di file key.json
-						if (setting.keyopenai === "ISI_APIKEY_OPENAI_DISINI")
-							return reply(
-								"Apikey belum diisi\n\nSilahkan isi terlebih dahulu apikeynya di file key.json\n\nApikeynya bisa dibuat di website: https://beta.openai.com/account/api-keys"
-							);
-						if (!text)
-							return reply(
-								`Membuat gambar dari AI.\n\nContoh:\n${prefix}${command} Wooden house on snow mountain`
-							);
-						const configuration = new Configuration({
-							apiKey: setting.keyopenai,
-						});
-						const openai = new OpenAIApi(configuration);
-						const response = await openai.createImage({
-							prompt: text,
-							n: 1,
-							size: "512x512", // you can change the size of the image here
-						});
-						//console.log(response.data.data[0].url) // see the response
-						client.sendImage(from, response.data.data[0].url, text, mek);
-					} catch (error) {
-						console.log();
-						if (error.response) {
-							console.log(error.response.status);
-							console.log(error.response.data);
-							console.log(`${error.response.status}\n\n${error.response.data}`);
-						} else {
-							console.log(error);
-							m.reply("Maaf, sepertinya ada yang error :" + error.message);
-						}
-					}
-					break;
-
 				case "stiker":
 					try {
 						let buffer = await downloadMediaMessage(
@@ -268,11 +230,11 @@ See free upcoming epic games
 					await m.reply("Bot stop..\n\n\nPlease contact owner to run ");
 					process.exit(0);
 					break;
-				case "tk":
-				case "tiktok":
+				case "tkmp4":
+				case "tiktok-video":
 					if (!text)
 						return reply(
-							`Download Video from tiktok No watermak.\n\nContoh:\n${prefix}tk (link vidio tiktok) atau\n${prefix}tiktok  (link vidio tiktok)`
+							`Download Video from tiktok No watermak.\n\nContoh:\n${prefix}tkmp4 (link vidio tiktok) atau\n${prefix}tiktok-video (link vidio tiktok)`
 						);
 
 					try {
@@ -289,7 +251,7 @@ See free upcoming epic games
 									video: { url: result.result.video },
 								});
 							} else {
-								m.reply(`gagal mendownload`);
+								m.reply(`gagal mendownload\ncoba lagi nanti`);
 							}
 						});
 					} catch (err) {
@@ -298,6 +260,39 @@ See free upcoming epic games
 					}
 					break;
 
+				case "tkmp3":
+				case "tiktok-song":
+					if (!text)
+						return reply(
+							`Download lagu from tiktok .\n\nContoh:\n${prefix}tkmp3 (link tiktok) atau\n${prefix}tiktok-song (link tiktok)`
+						);
+
+					try {
+						TiktokDL(tiktok_url, {
+							version: "v3",
+						}).then(async (result) => {
+							console.log(result);
+							if (
+								result.status == "success" &&
+								result.result.music != undefined
+							) {
+								m.reply(`downloading..`);
+
+								await client.sendMessage(mek.key.remoteJid, {
+									audio: { url: result.result.music },
+								});
+								console.log(result.result.music);
+
+							} else {
+								m.reply(`gagal mendownload\ncoba lagi nanti atau ganti link`);
+							}
+						});
+					} catch (err) {
+						console.log(err);
+						m.reply(`Hanya music tiktok yang bisa di download..`);
+					}
+					break;
+				
 				case "jadwal":
 				case "matkul":
 					const date = new Date();
@@ -354,6 +349,10 @@ ${up}
 								" ",
 								response.statusText
 							);
+							m.reply(`eror code : ${response.status}`);
+						}else{
+							m.reply(`please wait...`);
+
 						}
 						let nama = response.data[0].name;
 						let image = response.data[0].offerImageTall;
@@ -380,6 +379,11 @@ ${up}
 								" ",
 								response.statusText
 							);
+							m.reply(`eror code : ${response.status}`);
+
+						}else{
+							m.reply(`please wait...`);
+
 						}
 						for (let i = 0; i < response.data.length; i++) {
 							let nama = response.data[i].name;
@@ -387,7 +391,7 @@ ${up}
 							let url = response.data[i].appUrl;
 							let description = response.data[i].description;
 							let publisher = response.data[i].publisher;
-							let ket = `*${nama}*\n\nOpen In : ${url}\n\nDescription : ${description}\n\n Publisher : ${publisher}`;
+							let ket = `*${nama}* (coming soon)\n\nOpen In : ${url}\n\nDescription : ${description}\n\nPublisher : ${publisher}`;
 
 							client.sendImage(from, image, ket, mek);
 						}
