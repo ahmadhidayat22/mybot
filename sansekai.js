@@ -1,6 +1,4 @@
-const {
-	downloadMediaMessage,
-} = require("@adiwajshing/baileys");
+const { downloadMediaMessage } = require("@adiwajshing/baileys");
 const fs = require("fs");
 const util = require("util");
 const chalk = require("chalk");
@@ -13,7 +11,6 @@ const webp = require("node-webpmux");
 const path = require("path");
 const { TiktokDL } = require("@tobyg74/tiktok-api-dl");
 const axios = require("axios");
-
 const current = {
 	method: "GET",
 	url: "https://epic-free-games.p.rapidapi.com/epic-free-games",
@@ -30,6 +27,7 @@ const upcoming = {
 		"X-RapidAPI-Host": "epic-free-games.p.rapidapi.com",
 	},
 };
+
 module.exports = sansekai = async (client, m, chatUpdate, store) => {
 	try {
 		var body =
@@ -68,11 +66,11 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 		const itsMe = m.sender == botNumber ? true : false;
 		let text = (q = args.join(" "));
 		const arg = budy.trim().substring(budy.indexOf(" ") + 1);
-		const arg1 = arg.trim().substring(arg.indexOf(" ") + 1);
+		// const arg1 = arg.trim().substring(arg.indexOf(" ") + 1);
 
 		const from = m.chat;
 		const reply = m.reply;
-		const sender = m.sender;
+		// const sender = m.sender;
 		const mek = chatUpdate.messages[0];
 
 		const color = (text, color) => {
@@ -119,14 +117,13 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 					const minutes = waktu.getMinutes();
 					const seconds = waktu.getSecond();
 
-					console.log(year,month,days," ",hours,minutes,seconds);
+					console.log(year, month, days, " ", hours, minutes, seconds);
 
 				// 	break;
 				case "help":
 				case "menu":
 				case "start":
-				
-m.reply(`*▁ ▂ ▄ ▅ ▆ ▇ █ Whatsapp Bot █ ▇ ▆ ▅ ▄ ▂ ▁*
+					m.reply(`*▁ ▂ ▄ ▅ ▆ ▇ █ Whatsapp Bot █ ▇ ▆ ▅ ▄ ▂ ▁*
             
 *ミ★ ChatGPT ★彡*
 ★ Cmd: ${prefix}ai 
@@ -143,6 +140,15 @@ m.reply(`*▁ ▂ ▄ ▅ ▆ ▇ █ Whatsapp Bot █ ▇ ▆ ▅ ▄ ▂ ▁*
 ★ Cmd: ${prefix}tkmp3 or ${prefix}tiktok-song
    Mendownload lagu dari tiktok
 
+
+ミ★ Instagram download ★彡
+★ Cmd: ${prefix}ig
+   Mendownload vidio/gambar dari instagram (reels/IGTV/Post)
+
+★ Cmd: ${prefix}igs or ${prefix}ig-story
+   Mendownload vidio/gambar dari story instagram
+
+
 *ミ★ Matkul ★彡*
 ★ Cmd: ${prefix}jadwal or ${prefix}matkul
    lihat jadwal matkul hari ini
@@ -151,10 +157,12 @@ m.reply(`*▁ ▂ ▄ ▅ ▆ ▇ █ Whatsapp Bot █ ▇ ▆ ▅ ▄ ▂ ▁*
 ★ Cmd: ${prefix}free
    See free current epic games
 ★ Cmd: ${prefix}up
-   See free upcoming epic games`);
-// *(stop)*
-// Cmd: ${prefix}stop
-// Menghentikan bot
+   See free upcoming epic games
+
+*ミ★ cendol ★彡*
+★ Cmd: ${prefix}cendol
+   ` );
+
 					break;
 				case "ai":
 				case "openai":
@@ -166,13 +174,15 @@ m.reply(`*▁ ▂ ▄ ▅ ▆ ▇ █ Whatsapp Bot █ ▇ ▆ ▅ ▄ ▂ ▁*
 							return reply(
 								"Apikey belum diisi\n\nSilahkan isi terlebih dahulu apikeynya di file key.json\n\nApikeynya bisa dibuat di website: https://beta.openai.com/account/api-keys"
 							);
-						if (!text){
+						if (!text) {
 							return reply(
 								`Chat dengan AI.\n\nContoh:\n${prefix}${command} Apa itu resesi`
-						);}else{
-							reply(`processing your prompt \nPlease wait..`);
+							);
+						} else {
+							// reply(`processing your prompt \nPlease wait..`);
+							await waitEmote(mek.key);
 						}
-								
+
 						const configuration = new Configuration({
 							apiKey: setting.keyopenai,
 						});
@@ -181,8 +191,9 @@ m.reply(`*▁ ▂ ▄ ▅ ▆ ▇ █ Whatsapp Bot █ ▇ ▆ ▅ ▄ ▂ ▁*
 							model: "gpt-3.5-turbo",
 							messages: [{ role: "user", content: text }],
 						});
-						if(response.status != 200) throw new Error;
-						// console.log(response);
+						if (response.status != 200) throw new Error();
+						if (response.status == 200) await doneEmote(mek.key);
+
 						m.reply(`${response.data.choices[0].message.content}`);
 					} catch (error) {
 						if (error.response) {
@@ -206,7 +217,8 @@ m.reply(`*▁ ▂ ▄ ▅ ▆ ▇ █ Whatsapp Bot █ ▇ ▆ ▅ ▄ ▂ ▁*
 							}
 						);
 						if (buffer != "") {
-							m.reply("processing your image \nplease wait... ");
+							// m.reply("processing your image \nplease wait... ");
+							await waitEmote(mek, key);
 						}
 
 						buffer = await writeExifImg(buffer, {
@@ -217,6 +229,7 @@ m.reply(`*▁ ▂ ▄ ▅ ▆ ▇ █ Whatsapp Bot █ ▇ ▆ ▅ ▄ ▂ ▁*
 						await client.sendMessage(mek.key.remoteJid, {
 							sticker: { url: buffer },
 						});
+						await doneEmote(mek, key);
 
 						await fs.unlinkSync(buffer);
 					} catch (err) {
@@ -245,11 +258,13 @@ m.reply(`*▁ ▂ ▄ ▅ ▆ ▇ █ Whatsapp Bot █ ▇ ▆ ▅ ▄ ▂ ▁*
 								result.status == "success" &&
 								result.result.video != undefined
 							) {
-								m.reply(`downloading..`);
+								// m.reply(`downloading..`);
+								await waitEmote(mek.key);
 
 								await client.sendMessage(mek.key.remoteJid, {
 									video: { url: result.result.video },
 								});
+								await doneEmote(mek.key);
 							} else {
 								m.reply(`gagal mendownload\ncoba lagi nanti`);
 							}
@@ -259,44 +274,46 @@ m.reply(`*▁ ▂ ▄ ▅ ▆ ▇ █ Whatsapp Bot █ ▇ ▆ ▅ ▄ ▂ ▁*
 						m.reply(`Hanya vidio tiktok yang bisa di download..`);
 					}
 					break;
-				
+
 				case "btn":
 					const sections = [
 						{
-						title: "Section 1",
-						rows: [
-							{title: "Option 1", rowId: "option1"},
-							{title: "Option 2", rowId: "option2", description: "This is a description"}
-						]
+							title: "Section 1",
+							rows: [
+								{ title: "Option 1", rowId: "option1" },
+								{
+									title: "Option 2",
+									rowId: "option2",
+									description: "This is a description",
+								},
+							],
 						},
-					   {
-						title: "Section 2",
-						rows: [
-							{title: "Option 3", rowId: "option3"},
-							{title: "Option 4", rowId: "option4", description: "This is a description V2"}
-						]
+						{
+							title: "Section 2",
+							rows: [
+								{ title: "Option 3", rowId: "option3" },
+								{
+									title: "Option 4",
+									rowId: "option4",
+									description: "This is a description V2",
+								},
+							],
 						},
-					]
-					
+					];
+
 					const listMessage = {
-					  text: "This is a list",
-					  footer: "nice footer, link: https://google.com",
-					  title: "Amazing boldfaced list title",
-					  buttonText: "Required, text on the button to view the list",
-					  sections
-					}
-					
-					await client.sendMessage(mek.key.remoteJid, listMessage)
+						text: "This is a list",
+						footer: "nice footer, link: https://google.com",
+						title: "Amazing boldfaced list title",
+						buttonText: "Required, text on the button to view the list",
+						sections,
+					};
+
+					await client.sendMessage(mek.key.remoteJid, listMessage);
 					// await client.sendMessage(mek.key.remoteJid, buttonMessage)
 					break;
 				case "tkmp3":
 				case "tiktok-song":
-					await client.sendMessage(
-						mek.key.remoteJid, 
-						{audio: { url: "audio.mp3"}, mimetype: 'audio'} ,
-						{url : "audio.mp3"}
-						
-					);
 					if (!text)
 						return reply(
 							`Download lagu from tiktok .\n\nContoh:\n${prefix}tkmp3 (link tiktok) atau\n${prefix}tiktok-song (link tiktok)`
@@ -306,22 +323,24 @@ m.reply(`*▁ ▂ ▄ ▅ ▆ ▇ █ Whatsapp Bot █ ▇ ▆ ▅ ▄ ▂ ▁*
 						TiktokDL(tiktok_url, {
 							version: "v3",
 						}).then(async (result) => {
-							// console.log(result);
 							if (
 								result.status == "success" &&
 								result.result.music != undefined
 							) {
-								m.reply(`downloading..`);
+								// m.reply(`downloading..`);
+								await waitEmote(mek.key);
 
 								await client.sendMessage(
-									mek.key.remoteJid, 
-									{audio: { url: result.result.music }, mimetype:'audio/mp4'} ,
-									{url : result.result.music}
-									
+									mek.key.remoteJid,
+									{
+										audio: { url: result.result.music },
+										mimetype: "audio/mp4",
+									},
+									{ url: result.result.music }
 								);
-								
-								console.log(result.result.music);
+								await doneEmote(mek.key);
 
+								// console.log(result.result.music);
 							} else {
 								m.reply(`gagal mendownload\ncoba lagi nanti atau ganti link`);
 							}
@@ -331,7 +350,7 @@ m.reply(`*▁ ▂ ▄ ▅ ▆ ▇ █ Whatsapp Bot █ ▇ ▆ ▅ ▄ ▂ ▁*
 						m.reply(`Hanya music tiktok yang bisa di download..`);
 					}
 					break;
-				
+
 				case "jadwal":
 				case "matkul":
 					const date = new Date();
@@ -341,33 +360,40 @@ m.reply(`*▁ ▂ ▄ ▅ ▆ ▇ █ Whatsapp Bot █ ▇ ▆ ▅ ▄ ▂ ▁*
 					switch (day) {
 						case 0:
 							teks = "Tidak ada jadwal sekarang";
-							up = "SENIN\n• 07:30 - 09:00 | C306 | Struktur data\n• 14:40 - 16:10 | C307 | Organisasi dan arsitektur komputer";
+							up =
+								"SENIN\n• 07:30 - 09:00 | C306 | Struktur data\n• 14:40 - 16:10 | C307 | Organisasi dan arsitektur komputer";
 							break;
 						case 1:
-							teks = "SENIN\n• 07:30 - 09:00 | C306 | Struktur data\n• 14:40 - 16:10 | C307 | Organisasi dan arsitektur komputer";
-							up ="SELASA\n• 09:10 - 10:40 | C304 | Managemen proyek IT\n• 14:40 - 16:10 | C306 | Alajabar linear";
+							teks =
+								"SENIN\n• 07:30 - 09:00 | C306 | Struktur data\n• 14:40 - 16:10 | C307 | Organisasi dan arsitektur komputer";
+							up =
+								"SELASA\n• 09:10 - 10:40 | C304 | Managemen proyek IT\n• 14:40 - 16:10 | C306 | Alajabar linear";
 							break;
-						case 2: 
-							teks = "SELASA\n• 09:10 - 10:40 | C304 | Managemen proyek IT\n• 14:40 - 16:10 | C306 | Alajabar linear";
-							up = "RABU\n• 09:10 - 10:40 | C306 | Keamanan komputer\n• 13:00 - 14:30 | C306 | Pemrograman web";
+						case 2:
+							teks =
+								"SELASA\n• 09:10 - 10:40 | C304 | Managemen proyek IT\n• 14:40 - 16:10 | C306 | Alajabar linear";
+							up =
+								"RABU\n• 09:10 - 10:40 | C306 | Keamanan komputer\n• 13:00 - 14:30 | C306 | Pemrograman web";
 							break;
 						case 3:
-							teks = "RABU\n• 09:10 - 10:40 | C306 | Keamanan komputer\n• 13:00 - 14:30 | C306 | Pemrograman web";
+							teks =
+								"RABU\n• 09:10 - 10:40 | C306 | Keamanan komputer\n• 13:00 - 14:30 | C306 | Pemrograman web";
 							up = "KAMIS\n• 10:50 - 12:20 | C306 | Basis data";
 							break;
 						case 4:
 							teks = "KAMIS\n• 10:50 - 12:20 | C306 | Basis data";
-							up =  "JUMAT\n• 13:30 - 15:00 | D408 & D409 | Probabiltas dan statistika";
+							up =
+								"JUMAT\n• 13:30 - 15:00 | D408 & D409 | Probabiltas dan statistika";
 							break;
 						case 5:
-							teks = "JUMAT\n• 13:30 - 15:00 | D408 & D409 | Probabiltas dan statistika";
+							teks =
+								"JUMAT\n• 13:30 - 15:00 | D408 & D409 | Probabiltas dan statistika";
 							up = "Tidak ada jadwal ";
 							break;
 						case 6:
 							teks = "Tidak ada jadwal sekarang";
 							up = "Tidak ada jadwal ";
 							break;
-
 					}
 					m.reply(`
 *JADWAL HARI INI*
@@ -389,20 +415,21 @@ ${up}
 								response.statusText
 							);
 							m.reply(`eror code : ${response.status}`);
-						}else{
-							m.reply(`please wait...`);
-
+						} else {
+							// m.reply(`please wait...`);
+							await waitEmote(mek.key);
 						}
-						let nama = response.data[0].name;
-						let image = response.data[0].offerImageTall;
-						let url = response.data[0].appUrl;
-						let description = response.data[0].description;
-						let publisher = response.data[0].publisher;
-						let ket = `*${nama}*\n\nOpen In : ${url}\n\n*Price : free*\n\nDescription : ${description}\n\nPublisher : ${publisher}`;
+						for (let i = 0; i < response.data.length; i++) {
+							let nama = response.data[i].name;
+							let image = response.data[i].offerImageTall;
+							let url = response.data[i].appUrl;
+							let description = response.data[i].description;
+							let publisher = response.data[i].publisher;
+							let ket = `*${nama}*\n\nOpen In : ${url}\n\n*Price : free*\n\nDescription : ${description}\n\nPublisher : ${publisher}`;
 
-	
-
-						client.sendImage(from, image, ket, mek);
+							await client.sendImage(from, image, ket, mek);
+						}
+						await doneEmote(mek.key);
 					} catch (error) {
 						console.error(error);
 					}
@@ -419,10 +446,9 @@ ${up}
 								response.statusText
 							);
 							m.reply(`eror code : ${response.status}`);
-
-						}else{
-							m.reply(`please wait...`);
-
+						} else {
+							// m.reply(`please wait...`);
+							await waitEmote(mek.key);
 						}
 						for (let i = 0; i < response.data.length; i++) {
 							let nama = response.data[i].name;
@@ -432,13 +458,124 @@ ${up}
 							let publisher = response.data[i].publisher;
 							let ket = `*${nama}* (coming soon)\n\nOpen In : ${url}\n\nDescription : ${description}\n\nPublisher : ${publisher}`;
 
-							client.sendImage(from, image, ket, mek);
+							await client.sendImage(from, image, ket, mek);
 						}
+						await doneEmote(mek.key);
 					} catch (error) {
 						console.error(error);
 					}
 					break;
 
+				case "ig":
+				case "instagram":
+					if (!text)
+						return reply(
+							`Download Video/gambar dari ig.\n\nContoh:\n${prefix}ig (link instagram) atau\n${prefix}instagram (link instagram)`
+						);
+
+					const options = {
+						method: "GET",
+						url: "https://instagram-api32.p.rapidapi.com/",
+						params: {
+							url: text,
+						},
+						headers: {
+							"X-RapidAPI-Key":
+								"766d24ccc8msh20c3ff3132d20fep1e10fajsnc931cbce4d46",
+							"X-RapidAPI-Host": "instagram-api32.p.rapidapi.com",
+						},
+					};
+					try {
+						const response = await axios.request(options);
+						if (response.status != 200) throw new Error();
+						if (response.status == 200) await waitEmote(mek.key);
+
+						for (var i = 0; i < response.data.total_count; i++) {
+							let p = response.data.medias[i].extension;
+							let medias = response.data.medias[i].url;
+							// console.log(p);
+							if (p === "jpg") {
+								const tekss= " ";
+								await client.sendImage(from, medias,tekss ,mek);
+							} else if (p === "mp4") {
+								await client.sendMessage(mek.key.remoteJid, {
+									video: { url: medias },
+								});
+							}
+
+							// await client.sendMessage(mek.key.remoteJid , {p : })
+						}
+
+						doneEmote(mek.key);
+						
+					} catch (error) {
+						console.error(error);
+						m.reply("maaf sepertinya ada yang error : ",err);
+					}
+				
+
+					break;
+
+				case "igs":
+				case "ig_story":
+					if (!text)
+						return reply(
+							`Download Video/gambar dari story ig.\n\nContoh:\n${prefix}igs (username instagram) atau\n${prefix}ig-story (username instagram)`
+						);
+					const apaini = {
+						method: 'GET',
+						url: 'https://instagram-api32.p.rapidapi.com/',
+						params: {
+						  username: text
+						},
+						headers: {
+						  'X-RapidAPI-Key': '766d24ccc8msh20c3ff3132d20fep1e10fajsnc931cbce4d46',
+						  'X-RapidAPI-Host': 'instagram-api32.p.rapidapi.com'
+						}
+					  };
+
+					  try {
+						const response = await axios.request(apaini);
+						if (response.status != 200) throw new Error();
+						if (response.status == 200) await waitEmote(mek.key);
+
+						for (var i = 0; i < response.data.total_count; i++) {
+							let p = response.data.medias[i].extension;
+							let medias = response.data.medias[i].url;
+							
+							if (p === "jpg") {
+								const tekss= " ";
+								await client.sendImage(from, medias,tekss ,mek);
+							} else if (p === "mp4") {
+								await client.sendMessage(mek.key.remoteJid, {
+									video: { url: medias },
+								});
+							}
+
+							// await client.sendMessage(mek.key.remoteJid , {p : })
+						}
+
+						// console.log(response.data);
+						doneEmote(mek.key);
+					} catch (error) {
+						console.error(error);
+						m.reply("maaf sepertinya ada yang error : ",err);
+
+
+					}
+				break;
+
+				case "ping":
+					client.sendMessage(
+						mek.key.remoteJid,
+						{ text: "pong" },
+						{ ephemeralExpiration: WA_DEFAULT_EPHEMERAL }
+					);
+					break;
+
+				case "cendol":
+						m.reply(`cendol nya dong puh sepuh https://saweria.co/amway` )
+				break;
 				default: {
 					if (isCmd2 && budy.toLowerCase() != undefined) {
 						if (m.chat.endsWith("broadcast")) return;
@@ -464,6 +601,25 @@ ${up}
 					}
 				}
 			}
+		}
+
+		async function waitEmote(keyMessage) {
+			const reactionMessage = {
+				react: {
+					text: "⏳", // use an empty string to remove the reaction✅
+					key: keyMessage,
+				},
+			};
+			await client.sendMessage(mek.key.remoteJid, reactionMessage);
+		}
+		async function doneEmote(keyMessage) {
+			const reactionMessage = {
+				react: {
+					text: "✅", // use an empty string to remove the reaction
+					key: keyMessage,
+				},
+			};
+			await client.sendMessage(mek.key.remoteJid, reactionMessage);
 		}
 	} catch (err) {
 		m.reply(util.format(err));
