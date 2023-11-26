@@ -224,29 +224,46 @@ async function startHisoka() {
     const { connection, lastDisconnect } = update;
     if (connection === "close") {
       let reason = new Boom(lastDisconnect?.error)?.output.statusCode;
+      let isi = '';
       if (reason === DisconnectReason.badSession) {
         console.log(`Bad Session File, Please Delete Session and Scan Again`);
+        isi = `Bad Session File, Please Delete Session and Scan Again`;
+        sendToMe(isi);
         process.exit();
       } else if (reason === DisconnectReason.connectionClosed) {
         console.log("Connection closed, reconnecting....");
+        isi = `Connection closed, reconnecting....`;
+        sendToMe(isi);
         startHisoka();
       } else if (reason === DisconnectReason.connectionLost) {
         console.log("Connection Lost from Server, reconnecting...");
+        isi = `Connection Lost from Server, reconnecting...`;
+        sendToMe(isi);
         startHisoka();
       } else if (reason === DisconnectReason.connectionReplaced) {
         console.log("Connection Replaced, Another New Session Opened, Please Restart Bot");
+        isi = `Connection Replaced, Another New Session Opened, Please Restart Bot`;
+        sendToMe(isi);
         process.exit();
       } else if (reason === DisconnectReason.loggedOut) {
         console.log(`Device Logged Out, Please Delete Folder Session yusril and Scan Again.`);
+        isi = `Device Logged Out, Please Delete Folder Session yusril and Scan Again.`;
+        sendToMe(isi);
         process.exit();
       } else if (reason === DisconnectReason.restartRequired) {
         console.log("Restart Required, Restarting...");
+        isi = `Restart Required, Restarting...`;
+        sendToMe(isi);
         startHisoka();
       } else if (reason === DisconnectReason.timedOut) {
         console.log("Connection TimedOut, Reconnecting...");
+        isi = `Connection TimedOut, Reconnecting...`;
+        sendToMe(isi);
         startHisoka();
       } else {
         console.log(`Unknown DisconnectReason: ${reason}|${connection}`);
+        isi = `Unknown DisconnectReason: ${reason}|${connection}`;
+        sendToMe(isi);
         startHisoka();
       }
     } else if (connection === "open") {
@@ -261,6 +278,11 @@ async function startHisoka() {
       }
       count++;
       client.sendMessage(botNumber, { text: `Bot started!` });
+
+      async function sendToMe(teksnya){
+        await client.sendMessage(botNumber, { text: teksnya });
+
+      }
     }
     // console.log('Connected...', update)
   });
