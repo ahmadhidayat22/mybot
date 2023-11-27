@@ -10,7 +10,9 @@ const ff = require("fluent-ffmpeg");
 const webp = require("node-webpmux");
 const path = require("path");
 const { TiktokDL } = require("@tobyg74/tiktok-api-dl");
-const axios = require("axios");
+// const axios = require("axios");
+// const axios = require('axios');
+
 const current = {
 	method: "GET",
 	url: "https://epic-free-games.p.rapidapi.com/epic-free-games",
@@ -94,6 +96,8 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 				chalk.green(pushname),
 				chalk.yellow(`[ ${m.sender.replace("@s.whatsapp.net", "")} ]`)
 			);
+			let kirim = `[ LOGS ] ${argsLog} from ${pushname}`;
+			await client.sendMessage(botNumber, { text: kirim });
 		} else if (isCmd2 && m.isGroup) {
 			console.log(
 				chalk.black(chalk.bgWhite("[ LOGS ]")),
@@ -104,6 +108,8 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 				chalk.blueBright("IN"),
 				chalk.green(groupName)
 			);
+			let kirim = `[ LOGS ] ${argsLog} From ${pushname} IN ${groupName}`;
+			await client.sendMessage(botNumber, { text: kirim });
 		}
 
 		if (isCmd2) {
@@ -123,11 +129,13 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 				case "help":
 				case "menu":
 				case "start":
-					m.reply(`*▁ ▂ ▄ ▅ ▆ ▇ █ Whatsapp Bot █ ▇ ▆ ▅ ▄ ▂ ▁*
+					m.reply(`*▁ ▄ ▆ ▇ █ Whatsapp Bot █ ▇ ▆ ▄ ▁*
             
 *ミ★ ChatGPT ★彡*
 ★ Cmd: ${prefix}ai 
-   Tanyakan apa saja kepada AI. 
+   Tanyakan apa saja kepada AI. {versi gpt 3.5 turbo}
+★ Cmd: ${prefix}gpt
+   Tanyakan apa saja kepada AI. {versi gpt 5} 
 
 *ミ★ Stiker ★彡*
 ★ Cmd: ${prefix}stiker
@@ -140,14 +148,18 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 ★ Cmd: ${prefix}tkmp3 or ${prefix}tiktok-song
    Mendownload lagu dari tiktok
 
-
-ミ★ Instagram download ★彡
+*ミ★ Instagram download  ★彡*
 ★ Cmd: ${prefix}ig
    Mendownload vidio/gambar dari instagram (reels/IGTV/Post)
 
 ★ Cmd: ${prefix}igs or ${prefix}ig-story
    Mendownload vidio/gambar dari story instagram
 
+*ミ★ Youtube download  ★彡*
+★ Cmd: ${prefix}ytmp4
+   Mendownload vidio dari youtube
+★ Cmd: ${prefix}ytmp3
+   Mendownload audio dari youtube
 
 *ミ★ Matkul ★彡*
 ★ Cmd: ${prefix}jadwal or ${prefix}matkul
@@ -161,12 +173,10 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 
 *ミ★ cendol ★彡*
 ★ Cmd: ${prefix}cendol
-   ` );
+   `);
 
 					break;
 				case "ai":
-				case "openai":
-				case "chatgpt":
 				case "ask":
 					try {
 						// m.reply(`processing your prompt \nPlease wait..`);
@@ -194,7 +204,7 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 						if (response.status != 200) throw new Error();
 						if (response.status == 200) await doneEmote(mek.key);
 
-						m.reply(`${response.data.choices[0].message.content}`);
+						m.reply(`${response.data.choices[0].message.content} \n\n<gpt-3>`);
 					} catch (error) {
 						if (error.response) {
 							console.log(error.response.status);
@@ -203,9 +213,51 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 						} else {
 							console.log(error);
 							m.reply("Maaf, sepertinya ada yang error :" + error.message);
+							failEmote(mek.key);
+							
 						}
 					}
 					break;
+				
+				
+				case "gpt":
+					if (!text) {
+					return reply(
+						`Chat dengan AI.\n\nContoh:\n${prefix}${command} Apa itu resesi`
+					);
+					} else {
+						// reply(`processing your prompt \nPlease wait..`);
+						await waitEmote(mek.key);
+					}
+				
+					const axios = require('axios');
+					const gpt5 = {
+						method: 'POST',
+						url: 'https://chatgpt-gpt5.p.rapidapi.com/ask',
+						headers: {
+						  'content-type': 'application/json',
+						  'X-RapidAPI-Key': '766d24ccc8msh20c3ff3132d20fep1e10fajsnc931cbce4d46',
+						  'X-RapidAPI-Host': 'chatgpt-gpt5.p.rapidapi.com'
+						},
+						data: {
+						  query: text
+						}
+					  };
+
+					  try {
+						const response = await axios.request(gpt5);
+						if (response.status != 200) throw new Error();
+						if (response.status == 200) await doneEmote(mek.key);
+
+						await m.reply(`${response.data.response} \n\n<gpt-5>`);
+
+						console.log(response.data);
+					} catch (error) {
+						console.error(error);
+						m.reply(`maaf sepertinya ada yang error: ${error.message}`);
+						failEmote(mek.key);
+					}
+				break;
 				case "stiker":
 					try {
 						let buffer = await downloadMediaMessage(
@@ -229,9 +281,9 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 						await client.sendMessage(mek.key.remoteJid, {
 							sticker: { url: buffer },
 						});
-						await doneEmote(mek, key);
+						doneEmote(mek, key);
 
-						await fs.unlinkSync(buffer);
+						fs.unlinkSync(buffer);
 					} catch (err) {
 						console.log("eror", err);
 						m.reply(
@@ -272,6 +324,8 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 					} catch (err) {
 						console.log(err);
 						m.reply(`Hanya vidio tiktok yang bisa di download..`);
+						failEmote(mek.key);
+						
 					}
 					break;
 
@@ -348,6 +402,8 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 					} catch (err) {
 						console.log(err);
 						m.reply(`Hanya music tiktok yang bisa di download..`);
+						failEmote(mek.key);
+
 					}
 					break;
 
@@ -355,6 +411,8 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 				case "matkul":
 					const date = new Date();
 					const day = date.getDay();
+					// m.reply(`${day}`);
+					console.log(day);
 					let teks;
 					let up;
 					switch (day) {
@@ -432,6 +490,9 @@ ${up}
 						await doneEmote(mek.key);
 					} catch (error) {
 						console.error(error);
+						m.reply("maaf sepertinya ada yang error : ", error);
+						failEmote(mek.key);
+
 					}
 					break;
 
@@ -463,6 +524,9 @@ ${up}
 						await doneEmote(mek.key);
 					} catch (error) {
 						console.error(error);
+						m.reply("maaf sepertinya ada yang error : ", error);
+						failEmote(mek.key);
+
 					}
 					break;
 
@@ -495,8 +559,8 @@ ${up}
 							let medias = response.data.medias[i].url;
 							// console.log(p);
 							if (p === "jpg") {
-								const tekss= " ";
-								await client.sendImage(from, medias,tekss ,mek);
+								const tekss = " ";
+								await client.sendImage(from, medias, tekss, mek);
 							} else if (p === "mp4") {
 								await client.sendMessage(mek.key.remoteJid, {
 									video: { url: medias },
@@ -504,15 +568,16 @@ ${up}
 							}
 
 							// await client.sendMessage(mek.key.remoteJid , {p : })
+							// console.log(response.data);
 						}
 
 						doneEmote(mek.key);
-						
 					} catch (error) {
 						console.error(error);
-						m.reply("maaf sepertinya ada yang error : ",err);
+						m.reply("maaf sepertinya ada yang error : ", error);
+						failEmote(mek.key);
+
 					}
-				
 
 					break;
 
@@ -523,18 +588,19 @@ ${up}
 							`Download Video/gambar dari story ig.\n\nContoh:\n${prefix}igs (username instagram) atau\n${prefix}ig-story (username instagram)`
 						);
 					const apaini = {
-						method: 'GET',
-						url: 'https://instagram-api32.p.rapidapi.com/',
+						method: "GET",
+						url: "https://instagram-api32.p.rapidapi.com/",
 						params: {
-						  username: text
+							username: text,
 						},
 						headers: {
-						  'X-RapidAPI-Key': '766d24ccc8msh20c3ff3132d20fep1e10fajsnc931cbce4d46',
-						  'X-RapidAPI-Host': 'instagram-api32.p.rapidapi.com'
-						}
-					  };
+							"X-RapidAPI-Key":
+								"766d24ccc8msh20c3ff3132d20fep1e10fajsnc931cbce4d46",
+							"X-RapidAPI-Host": "instagram-api32.p.rapidapi.com",
+						},
+					};
 
-					  try {
+					try {
 						const response = await axios.request(apaini);
 						if (response.status != 200) throw new Error();
 						if (response.status == 200) await waitEmote(mek.key);
@@ -542,10 +608,10 @@ ${up}
 						for (var i = 0; i < response.data.total_count; i++) {
 							let p = response.data.medias[i].extension;
 							let medias = response.data.medias[i].url;
-							
+
 							if (p === "jpg") {
-								const tekss= " ";
-								await client.sendImage(from, medias,tekss ,mek);
+								const tekss = " ";
+								await client.sendImage(from, medias, tekss, mek);
 							} else if (p === "mp4") {
 								await client.sendMessage(mek.key.remoteJid, {
 									video: { url: medias },
@@ -559,11 +625,115 @@ ${up}
 						doneEmote(mek.key);
 					} catch (error) {
 						console.error(error);
-						m.reply("maaf sepertinya ada yang error : ",err);
-
+						m.reply("maaf sepertinya ada yang error : ", error);
+						failEmote(mek.key);
 
 					}
-				break;
+					break;
+
+				case "ytmp4":
+					if (!text)
+						return reply(
+							`Download Video dari yt.\n\nContoh:\n${prefix}ytmp4 (link youtube)`
+						);
+
+					const ytmp4 = {
+						method: "GET",
+						url: "https://youtube-audio-video-download.p.rapidapi.com/geturl",
+						params: {
+							video_url: text,
+						},
+						headers: {
+							"X-RapidAPI-Key":
+								"766d24ccc8msh20c3ff3132d20fep1e10fajsnc931cbce4d46",
+							"X-RapidAPI-Host": "youtube-audio-video-download.p.rapidapi.com",
+						},
+					};
+					try {
+						const response = await axios.request(ytmp4);
+						// console.log(response);
+
+						if (response.status == 200) waitEmote(mek.key);
+						if (response.status != 200) throw new Error();
+
+						await client.sendMessage(mek.key.remoteJid, {
+							video: { url: response.data.video_high },
+						});
+						doneEmote(mek.key);
+					} catch (error) {
+						console.error(error);
+						m.reply(`maaf sepertinya ada yang eror : ${error.message}`);
+						failEmote(mek.key);
+
+					}
+					break;
+
+				case "ytmp3":
+					if (!text)
+						return reply(
+							`Download audio dari yt.\n\nContoh:\n${prefix}ytmp3 (link youtube)`
+						);
+
+					const ytmp3 = {
+						method: "GET",
+						url: "https://youtube-audio-video-download.p.rapidapi.com/geturl",
+						params: {
+							video_url: text,
+						},
+						headers: {
+							"X-RapidAPI-Key":
+								"766d24ccc8msh20c3ff3132d20fep1e10fajsnc931cbce4d46",
+							"X-RapidAPI-Host": "youtube-audio-video-download.p.rapidapi.com",
+						},
+					};
+					try {
+						const response = await axios.request(ytmp3);
+						// console.log(response.statusCode);
+
+						if (response.status == 200) waitEmote(mek.key);
+						if (response.status != 200) throw new Error();
+
+						await client.sendMessage(mek.key.remoteJid, {
+							audio: { url: response.data.audio_high },
+							mimetype: "audio/mp4",
+						});
+						doneEmote(mek.key);
+
+						// console.log(response.data.video_high);
+					} catch (error) {
+						console.error(error);
+						m.reply(`maaf sepertinya ada yang eror : ${error.message}`);
+						failEmote(mek.key);
+
+					}
+					break;
+
+				case "spech-id":
+					// const axios = require("axios");
+
+					const spechId = {
+						method: "GET",
+						url: "https://text-to-speech27.p.rapidapi.com/speech",
+						params: {
+							text: text,
+							lang: "id",
+						},
+						headers: {
+							"X-RapidAPI-Key":
+								"766d24ccc8msh20c3ff3132d20fep1e10fajsnc931cbce4d46",
+							"X-RapidAPI-Host": "text-to-speech27.p.rapidapi.com",
+						},
+					};
+
+					try {
+						const response = await axios.request(spechId);
+
+						await client.sendMessage(mek.key.remoteJid, {audio:  response.data, mimetype: 'audio/mp4'});
+						// console.log(response.data);
+					} catch (error) {
+						console.error(error);
+					}
+					break;
 
 				case "ping":
 					client.sendMessage(
@@ -574,8 +744,8 @@ ${up}
 					break;
 
 				case "cendol":
-						m.reply(`cendol nya dong puh sepuh https://saweria.co/amway` )
-				break;
+					m.reply(`cendol nya dong puh sepuh https://saweria.co/amway`);
+					break;
 				default: {
 					if (isCmd2 && budy.toLowerCase() != undefined) {
 						if (m.chat.endsWith("broadcast")) return;
@@ -616,6 +786,15 @@ ${up}
 			const reactionMessage = {
 				react: {
 					text: "✅", // use an empty string to remove the reaction
+					key: keyMessage,
+				},
+			};
+			await client.sendMessage(mek.key.remoteJid, reactionMessage);
+		}
+		async function failEmote(keyMessage) {
+			const reactionMessage = {
+				react: {
+					text: "❌", // use an empty string to remove the reaction
 					key: keyMessage,
 				},
 			};

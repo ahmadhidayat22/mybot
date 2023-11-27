@@ -19,6 +19,7 @@ const chalk = require("chalk");
 const figlet = require("figlet");
 const _ = require("lodash");
 const PhoneNumber = require("awesome-phonenumber");
+let isi = '';
 
 let count = 1;
 const store = makeInMemoryStore({ logger: pino().child({ level: "silent", stream: "store" }) });
@@ -170,12 +171,14 @@ async function startHisoka() {
   process.on("unhandledRejection", (reason, promise) => {
     unhandledRejections.set(promise, reason);
     console.log("Unhandled Rejection at:", promise, "reason:", reason);
+    
   });
   process.on("rejectionHandled", (promise) => {
     unhandledRejections.delete(promise);
   });
   process.on("Something went wrong", function (err) {
     console.log("Caught exception: ", err);
+   
   });
 
   // Setting
@@ -218,56 +221,55 @@ async function startHisoka() {
   };
 
   client.public = true;
+  const botNumber = await client.decodeJid(client.user.id);
 
   client.serializeM = (m) => smsg(client, m, store);
   client.ev.on("connection.update", async (update) => {
     const { connection, lastDisconnect } = update;
     if (connection === "close") {
       let reason = new Boom(lastDisconnect?.error)?.output.statusCode;
-      let isi = '';
       if (reason === DisconnectReason.badSession) {
         console.log(`Bad Session File, Please Delete Session and Scan Again`);
         isi = `Bad Session File, Please Delete Session and Scan Again`;
-        sendToMe(isi);
+        await sendToMe(isi);
         process.exit();
       } else if (reason === DisconnectReason.connectionClosed) {
         console.log("Connection closed, reconnecting....");
         isi = `Connection closed, reconnecting....`;
-        sendToMe(isi);
+        await sendToMe(isi);
         startHisoka();
       } else if (reason === DisconnectReason.connectionLost) {
         console.log("Connection Lost from Server, reconnecting...");
         isi = `Connection Lost from Server, reconnecting...`;
-        sendToMe(isi);
+        await sendToMe(isi);
         startHisoka();
       } else if (reason === DisconnectReason.connectionReplaced) {
         console.log("Connection Replaced, Another New Session Opened, Please Restart Bot");
         isi = `Connection Replaced, Another New Session Opened, Please Restart Bot`;
-        sendToMe(isi);
+        await sendToMe(isi);
         process.exit();
       } else if (reason === DisconnectReason.loggedOut) {
         console.log(`Device Logged Out, Please Delete Folder Session yusril and Scan Again.`);
         isi = `Device Logged Out, Please Delete Folder Session yusril and Scan Again.`;
-        sendToMe(isi);
+        await sendToMe(isi);
         process.exit();
       } else if (reason === DisconnectReason.restartRequired) {
         console.log("Restart Required, Restarting...");
         isi = `Restart Required, Restarting...`;
-        sendToMe(isi);
+        await sendToMe(isi);
         startHisoka();
       } else if (reason === DisconnectReason.timedOut) {
         console.log("Connection TimedOut, Reconnecting...");
         isi = `Connection TimedOut, Reconnecting...`;
-        sendToMe(isi);
+        await sendToMe(isi);
         startHisoka();
       } else {
         console.log(`Unknown DisconnectReason: ${reason}|${connection}`);
         isi = `Unknown DisconnectReason: ${reason}|${connection}`;
-        sendToMe(isi);
+        await sendToMe(isi);
         startHisoka();
       }
     } else if (connection === "open") {
-      const botNumber = await client.decodeJid(client.user.id);
       const Nomorgrup ='120363198688029405@g.us'
       
       console.log(color("Bot success conneted to server", "green"));
@@ -277,15 +279,19 @@ async function startHisoka() {
       client.sendMessage(Nomorgrup, { text: `Bot started! \n\nketik /menu untuk melihat fitur bot`});
       }
       count++;
-      client.sendMessage(botNumber, { text: `Bot started!` });
+      // client.sendMessage(botNumber, { text: `Bot started!` });
+      isi = `Bot start`;
+      await sendToMe(isi);
 
-      async function sendToMe(teksnya){
-        await client.sendMessage(botNumber, { text: teksnya });
-
-      }
     }
+    
     // console.log('Connected...', update)
   });
+  async function sendToMe(teksnya){
+    await client.sendMessage(botNumber, { text: teksnya });
+
+  }
+
 
   client.ev.on("creds.update", saveCreds);
 
