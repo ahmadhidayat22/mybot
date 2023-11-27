@@ -251,7 +251,7 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 
 						await m.reply(`${response.data.response} \n\n<gpt-5>`);
 
-						console.log(response.data);
+						// console.log(response.data);
 					} catch (error) {
 						console.error(error);
 						m.reply(`maaf sepertinya ada yang error: ${error.message}`);
