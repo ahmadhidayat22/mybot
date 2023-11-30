@@ -329,43 +329,7 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 					}
 					break;
 
-				case "btn":
-					const sections = [
-						{
-							title: "Section 1",
-							rows: [
-								{ title: "Option 1", rowId: "option1" },
-								{
-									title: "Option 2",
-									rowId: "option2",
-									description: "This is a description",
-								},
-							],
-						},
-						{
-							title: "Section 2",
-							rows: [
-								{ title: "Option 3", rowId: "option3" },
-								{
-									title: "Option 4",
-									rowId: "option4",
-									description: "This is a description V2",
-								},
-							],
-						},
-					];
-
-					const listMessage = {
-						text: "This is a list",
-						footer: "nice footer, link: https://google.com",
-						title: "Amazing boldfaced list title",
-						buttonText: "Required, text on the button to view the list",
-						sections,
-					};
-
-					await client.sendMessage(mek.key.remoteJid, listMessage);
-					// await client.sendMessage(mek.key.remoteJid, buttonMessage)
-					break;
+				
 				case "tkmp3":
 				case "tiktok-song":
 					if (!text)
