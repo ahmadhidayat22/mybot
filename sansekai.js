@@ -11,7 +11,7 @@ const webp = require("node-webpmux");
 const path = require("path");
 const { TiktokDL } = require("@tobyg74/tiktok-api-dl");
 // const axios = require("axios");
-// const axios = require('axios');
+const axios = require('axios');
 
 const current = {
 	method: "GET",
@@ -270,7 +270,7 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 						);
 						if (buffer != "") {
 							// m.reply("processing your image \nplease wait... ");
-							await waitEmote(mek, key);
+							await waitEmote(mek.key);
 						}
 
 						buffer = await writeExifImg(buffer, {
@@ -281,7 +281,7 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 						await client.sendMessage(mek.key.remoteJid, {
 							sticker: { url: buffer },
 						});
-						doneEmote(mek, key);
+						doneEmote(mek.key);
 
 						fs.unlinkSync(buffer);
 					} catch (err) {
