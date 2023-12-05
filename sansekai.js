@@ -1,4 +1,4 @@
-const { downloadMediaMessage } = require("@adiwajshing/baileys");
+const { downloadMediaMessage } = require("@whiskeysockets/baileys");
 const fs = require("fs");
 const util = require("util");
 const chalk = require("chalk");
@@ -11,7 +11,7 @@ const webp = require("node-webpmux");
 const path = require("path");
 const { TiktokDL } = require("@tobyg74/tiktok-api-dl");
 // const axios = require("axios");
-const axios = require('axios');
+// const axios = require('axios');
 
 const current = {
 	method: "GET",
@@ -84,6 +84,7 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 			? await client.groupMetadata(m.chat).catch((e) => {})
 			: "";
 		const groupName = m.isGroup ? groupMetadata.subject : "";
+		const axios = require('axios');
 
 		// Push Message To Console
 		let argsLog = budy.length > 30 ? `${q.substring(0, 30)}...` : budy;
@@ -230,7 +231,7 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 						await waitEmote(mek.key);
 					}
 				
-					const axios = require('axios');
+					// const axios = require('axios');
 					const gpt5 = {
 						method: 'POST',
 						url: 'https://chatgpt-gpt5.p.rapidapi.com/ask',
@@ -274,8 +275,8 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 						}
 
 						buffer = await writeExifImg(buffer, {
-							packname: "amway",
-							author: "amway",
+							packname: "0w0",
+							author: "0w0",
 						});
 
 						await client.sendMessage(mek.key.remoteJid, {
@@ -294,7 +295,7 @@ module.exports = sansekai = async (client, m, chatUpdate, store) => {
 				case "stop":
 					await m.reply("Bot stop..\n\n\nPlease contact owner to run ");
 					process.exit(0);
-					break;
+					
 				case "tkmp4":
 				case "tiktok-video":
 					if (!text)

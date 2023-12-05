@@ -10,7 +10,7 @@ const {
   getContentType,
   Browsers, 
   fetchLatestWaWebVersion
-} = require("@adiwajshing/baileys");
+} = require("@whiskeysockets/baileys");
 const pino = require("pino");
 const { Boom } = require("@hapi/boom");
 const fs = require("fs");
