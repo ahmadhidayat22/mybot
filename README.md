@@ -13,8 +13,8 @@
 Install [NodeJS](https://nodejs.org/en/download/)
  dan [Git Bash](https://git-scm.com/downloads) terlebih dahulu
 ```bash
-$ git clone https://github.com/Sansekai/Wa-OpenAI
-$ cd Wa-OpenAI
+$ git clone https://github.com/ahmadhidayat22/mybot.git
+$ cd mybot
 $ npm install
 $ node index.js
 ```
